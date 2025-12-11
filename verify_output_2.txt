@@ -1,0 +1,107 @@
+[32m[Nest] 1420  - [39m11/12/2025, 12:35:28 pm [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 1420  - [39m11/12/2025, 12:35:28 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +47ms[39m
+[32m[Nest] 1420  - [39m11/12/2025, 12:35:28 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:28 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (1)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:31 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (2)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:34 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (3)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:37 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (4)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:40 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (5)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:43 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (6)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:46 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (7)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:49 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (8)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:53 pm [31m  ERROR[39m [38;5;3m[MongooseModule] [39m[31mUnable to connect to the database. Retrying (9)...[39m
+MongoServerError: Authentication failed.
+    at Connection.sendCommand (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:557:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Connection.command (D:\knowledgeBase\node_modules\mongodb\src\cmap\connection.ts:627:22)
+    at async executeScram (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:113:20)
+    at async ScramSHA256.auth (D:\knowledgeBase\node_modules\mongodb\src\cmap\auth\scram.ts:60:12)
+    at async performInitialHandshake (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:164:7)
+    at async connect (D:\knowledgeBase\node_modules\mongodb\src\cmap\connect.ts:43:5)
+[31m[Nest] 1420  - [39m11/12/2025, 12:35:53 pm [31m  ERROR[39m [38;5;3m[ExceptionHandler] [39mMongoServerError: Authentication failed.
+    at Connection.sendCommand [90m(D:\knowledgeBase\[39mnode_modules\[4mmongodb[24m\src\cmap\connection.ts:557:17[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at async Connection.command [90m(D:\knowledgeBase\[39mnode_modules\[4mmongodb[24m\src\cmap\connection.ts:627:22[90m)[39m
+    at async executeScram [90m(D:\knowledgeBase\[39mnode_modules\[4mmongodb[24m\src\cmap\auth\scram.ts:113:20[90m)[39m
+    at async ScramSHA256.auth [90m(D:\knowledgeBase\[39mnode_modules\[4mmongodb[24m\src\cmap\auth\scram.ts:60:12[90m)[39m
+    at async performInitialHandshake [90m(D:\knowledgeBase\[39mnode_modules\[4mmongodb[24m\src\cmap\connect.ts:164:7[90m)[39m
+    at async connect [90m(D:\knowledgeBase\[39mnode_modules\[4mmongodb[24m\src\cmap\connect.ts:43:5[90m)[39m {
+  errorLabelSet: Set(2) {
+    [32m'HandshakeError'[39m,
+    [32m'ResetPool'[39m
+  },
+  errorResponse: {
+    ok: [33m0[39m,
+    errmsg: [32m'Authentication failed.'[39m,
+    code: [33m18[39m,
+    codeName: [32m'AuthenticationFailed'[39m
+  },
+  ok: [33m0[39m,
+  code: [33m18[39m,
+  codeName: [32m'AuthenticationFailed'[39m,
+  connectionGeneration: [33m0[39m
+}

@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './src/app.module';
-import { DocumentsService } from './src/documents/documents.service';
-import { ChaptersService } from './src/chapters/chapters.service';
-import { SubchaptersService } from './src/subchapters/subchapters.service';
-import { PagesService } from './src/pages/pages.service';
+import { DocumentsService } from 'src/modules/documents/documents.service';
+import { ChaptersService } from 'src/modules/chapters/chapters.service';
+import { SubchaptersService } from 'src/modules/subchapters/subchapters.service';
+import { PagesService } from 'src/modules/pages/pages.service';
+
 
 async function bootstrap() {
     try {

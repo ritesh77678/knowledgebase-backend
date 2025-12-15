@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Document } from "./document.entity";
 import { Repository } from "typeorm";
@@ -13,16 +13,23 @@ export class DocumentService {
     ){}
 
     async createDocument(documentDto: CreateDocumentDto){
+
+        const exists = await this.documentRepository.findOne({where: {title: documentDto.title, communityId: documentDto.communityId}})
+        if (exists) throw new ConflictException("Document already exists")
+
         const document = this.documentRepository.create(documentDto)
         return await this.documentRepository.save(document)
     }
 
-    async updateDocument(documentDto: UpdateDocumentDto){
-        const document = await this.documentRepository.findOne({where: {id: documentDto.id}}) 
+    async updateDocument(id: string, documentDto: UpdateDocumentDto){
+
+        const {title, description} = documentDto
+
+        const document = await this.documentRepository.findOne({where: {id}}) 
         if (!document) throw new NotFoundException("Document not found")
 
-        document.title = documentDto.title
-        document.description = documentDto.description
+        title && (document.title = title)
+        description && (document.description = description)
         
         return await this.documentRepository.save(document)
     }
@@ -31,7 +38,8 @@ export class DocumentService {
         const document = await this.documentRepository.findOne({where: {id}})
         if (!document) throw new NotFoundException("Document not found")
 
-        return await this.documentRepository.remove(document)
+        document.status = "deleted"
+        return await this.documentRepository.save(document)
     }
 
     async getDocumentById(id: string){

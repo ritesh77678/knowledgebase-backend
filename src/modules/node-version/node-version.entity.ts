@@ -13,6 +13,9 @@ export class NodeVersion {
     @Column({type: "json"})
     snapShort: JSON
 
+    @Column()
+    version: string
+
     @ManyToOne(() => Node, (node) => node.nodeVersions)
     node: Node
 

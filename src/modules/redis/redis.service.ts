@@ -33,6 +33,17 @@ export class RedisService {
         return this.client.del(key)
     }
 
+    async xadd(cacheKey: string, payload: string){
+        return this.client.xadd(
+            cacheKey,
+            "*",
+            "payload",
+            payload,
+            "ts",
+            Date.now().toString()
+        )
+    }
+
     async getClient(){
         return this.client
     }

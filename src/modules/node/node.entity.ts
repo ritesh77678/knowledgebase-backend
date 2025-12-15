@@ -4,7 +4,7 @@ import { NodeVersion } from "../node-version/node-version.entity";
 import { Content } from "../content/content.entity";
 
 @Entity()
-@Unique(["title", "parentId"])
+@Unique(["title", "parent", "document"])
 export class Node {
 
     @PrimaryGeneratedColumn("uuid")
@@ -16,16 +16,22 @@ export class Node {
     @Column({ type: "enum", enum: ['chapter', 'subchapter', 'page'] })
     type: 'chapter' | 'subchapter' | 'page'
 
-    @Column()
+    @Column({nullable: true})
     authorId: string
 
-    @Column({ type: "uuid" })
-    parentId: string
+    @Column()
+    orderIndex: string
+
+    @ManyToOne(() => Node, (node) => node.children, {nullable: true})
+    parent: Node
+
+    @OneToMany(() => Node, (node) => node.parent, {onDelete: "CASCADE"})
+    children: Node[]
 
     @OneToOne(() => Content, (content) => content.node)
     content: Content
 
-    @ManyToOne(() => Document, (document) => document.nodes)
+    @ManyToOne(() => Document, (document) => document.nodes, {onDelete: "CASCADE"})
     document: Document
 
     @OneToMany(() => NodeVersion, (nodeVersion) => nodeVersion.node)

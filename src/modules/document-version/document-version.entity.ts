@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Document } from "../document/document.entity";
 
 @Entity()
+@Unique(["document", "version"])
 export class DocumentVersion {
  
     @PrimaryGeneratedColumn("uuid")
@@ -10,11 +11,8 @@ export class DocumentVersion {
     @ManyToOne(() => Document, (document) => document.documentVersions)
     document: Document
 
-    @Column({type: "int"})
-    version: number
-
-    @Column({type: "boolean", default: false})
-    isPublished: boolean
+    @Column()
+    version: string
 
     @Column()
     title: string
@@ -22,8 +20,8 @@ export class DocumentVersion {
     @Column()
     description: string
     
-    @Column({type: "json"})
-    snapShort: JSON
+    @Column({type: "jsonb"})
+    snapShort: any
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date

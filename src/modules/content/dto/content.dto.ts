@@ -1,8 +1,7 @@
-import { IsJSON, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 
 export class ContentDto {
 
-    @IsString()   
-    content: string
-
+    @IsNotEmpty()
+    content: any
 }

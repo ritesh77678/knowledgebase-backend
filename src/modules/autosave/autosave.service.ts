@@ -9,13 +9,9 @@ export class AutoSaveService {
     ){}
 
     async enqueueAutoSave(nodeId: string, payload: string){
-        (await this.redisService.getClient()).xadd(
-            `autosave:${nodeId}`,
-            "*",
-            "payload",
-            payload, 
-            "ts",
-            Date.now().toString()
-        )
+
+        const cacheKey = `autosave:${nodeId}`
+        this.redisService.set(cacheKey, payload)
+        this.redisService.xadd(cacheKey, payload)
     }
 }

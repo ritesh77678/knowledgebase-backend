@@ -8,10 +8,15 @@ import { Node } from './modules/node/node.entity';
 import { Content } from './modules/content/content.entity';
 import { DocumentVersion } from './modules/document-version/document-version.entity';
 import { NodeVersion } from './modules/node-version/node-version.entity';
-import { ContentVersion } from './modules/content-version/content-version.entity';
 import { Permission } from './modules/permission/permission.entity';
 import { RedisModule } from './modules/redis/redis.module';
 import { AutoSaveModule } from './modules/autosave/autosave.module';
+import { DocumentModule } from './modules/document/document.module';
+import { NodeModule } from './modules/node/node.module';
+import { ContentModule } from './modules/content/content.module';
+import { DocumentVersionModule } from './modules/document-version/document-version.module';
+import { NodeVersionModule } from './modules/node-version/node-version.module';
+import { PermissionModule } from './modules/permission/permission.module';
 
 @Module({
   imports: [
@@ -32,14 +37,19 @@ import { AutoSaveModule } from './modules/autosave/autosave.module';
         Content,
         DocumentVersion,
         NodeVersion,
-        ContentVersion,
         Permission,
 
       ],
       synchronize: true,
     }),
     RedisModule,
-    AutoSaveModule
+    AutoSaveModule,
+    DocumentModule,
+    NodeModule,
+    ContentModule,
+    DocumentVersionModule,
+    NodeVersionModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

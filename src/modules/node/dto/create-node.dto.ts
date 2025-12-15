@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class CreateNodeDto {
     
@@ -14,10 +14,10 @@ export class CreateNodeDto {
     authorId: string
 
     @IsString()
-    @IsUUID()
-    parentId: string
+    orderIndex: string
 
     @IsString()
     @IsUUID()
-    documentId: string
+    @IsOptional()
+    parentId: string
 }

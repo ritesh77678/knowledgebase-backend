@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Content } from "./content.entity";
 import { ContentDto } from "./dto/content.dto";
@@ -12,20 +12,22 @@ export class ContentService {
         private readonly redisService: RedisService
     ) { }
 
-    // async saveContent(contentDto: ContentDto) {
-    //     const content = await this.contentRepository.upsert(
-    //         contentDto,
-    //         {
-    //             conflictPaths: ['nodeId'],
-    //             skipUpdateIfNoValuesChanged: true
-    //         }
-    //     )
+    async createContent(nodeId: string){
+        const exists = await this.contentRepository.findOne({where: {node: {id: nodeId}}})
+        if (exists) throw new ConflictException("Content already exists")
 
-    //     const cacheKey = `content:${contentDto.nodeId}`
-    //     await this.redisService.set(cacheKey, JSON.stringify(content), 3600000)
+        return await this.contentRepository.save({node: {id: nodeId}})
+    }
 
-    //     return content
-    // }
+    async saveContent(contentId: string, contentDto: ContentDto){
+
+        const content = await this.contentRepository.findOne({where: {id: contentId}})
+        if (!content) throw new NotFoundException("Content not found")
+
+        content.content = contentDto.content
+
+        return await this.contentRepository.save(content)
+    }
 
     async deleteContentByNodeId(nodeId: string) {
         const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })

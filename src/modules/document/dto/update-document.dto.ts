@@ -1,9 +1,4 @@
-import { PickType } from "@nestjs/swagger";
+import { PartialType, PickType } from "@nestjs/mapped-types";
 import { CreateDocumentDto } from "./create-document.dto";
-import { IsString } from "class-validator";
 
-export class UpdateDocumentDto extends PickType(CreateDocumentDto, ['title', 'description']) {
-
-    @IsString()
-    id: string
-}
+export class UpdateDocumentDto extends PartialType(PickType(CreateDocumentDto, ['title', 'description'])) {}

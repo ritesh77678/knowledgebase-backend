@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Node } from "../node/node.entity";
 import { DocumentVersion } from "../document-version/document-version.entity";
 import { Permission } from "../permission/permission.entity";
@@ -22,8 +22,8 @@ export class Document {
     @Column()
     communityId: string
 
-    @Column({type: "enum", enum: ['draft', 'private', 'deleted'], default: "draft"})
-    status: 'draft' | 'private' | 'deleted'
+    @Column({type: "enum", enum: ['draft', 'private', 'deleted', 'published'], default: "draft"})
+    status: 'draft' | 'private' | 'deleted' | 'published'
     
     @OneToMany(() => Node, (node) => node.document)
     nodes: Node[]
@@ -33,6 +33,10 @@ export class Document {
 
     @OneToMany(() => Permission, (permission) => permission.document)
     permissions: Permission[]
+
+    @ManyToOne(() => DocumentVersion, {nullable: true})
+    @JoinColumn({name: "publishedVersionId"})
+    publishedVersion: DocumentVersion
 
     @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     createdAt: Date

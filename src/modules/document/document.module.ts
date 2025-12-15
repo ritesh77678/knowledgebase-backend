@@ -11,6 +11,7 @@ import { DocumentController } from "./document.controller";
         ])
     ],
     controllers: [DocumentController],
-    providers: [DocumentService]
+    providers: [DocumentService],
+    exports: [DocumentService]
 })
 export class DocumentModule {}

@@ -1,9 +1,4 @@
-import { PickType } from "@nestjs/swagger";
+import { PartialType } from "@nestjs/mapped-types";
 import { CreateNodeDto } from "./create-node.dto";
-import { IsString } from "class-validator";
 
-export class UpdateNodeDto extends PickType(CreateNodeDto, ['title', 'type', 'parentId']) {
-    
-    @IsString()
-    id: string
-}
+export class UpdateNodeDto extends PartialType(CreateNodeDto) {}

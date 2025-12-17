@@ -10,8 +10,16 @@ export class AutoSaveService {
 
     async enqueueAutoSave(nodeId: string, payload: string){
 
-        const cacheKey = `autosave:${nodeId}`
+        const cacheKey = `autosave:cache:${nodeId}`
+        const streamKey = `autosave:stream`
+
         this.redisService.set(cacheKey, payload)
-        this.redisService.xadd(cacheKey, payload)
+        this.redisService.xadd(
+            streamKey,
+            JSON.stringify({
+                nodeId,
+                payload
+            })
+        )
     }
 }

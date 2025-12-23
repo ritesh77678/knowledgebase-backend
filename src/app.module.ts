@@ -17,6 +17,8 @@ import { ContentModule } from './modules/content/content.module';
 import { DocumentVersionModule } from './modules/document-version/document-version.module';
 import { NodeVersionModule } from './modules/node-version/node-version.module';
 import { PermissionModule } from './modules/permission/permission.module';
+import { ContentVersionModule } from './modules/content-version/content-version.module';
+import { ContentVersion } from './modules/content-version/content-version.entity';
 
 @Module({
   imports: [
@@ -35,18 +37,21 @@ import { PermissionModule } from './modules/permission/permission.module';
         Document,
         Node,
         Content,
+        ContentVersion,
         DocumentVersion,
         NodeVersion,
         Permission,
 
       ],
-      synchronize: true,
+      synchronize: false,
+      migrationsRun: true
     }),
     RedisModule,
     AutoSaveModule,
     DocumentModule,
     NodeModule,
     ContentModule,
+    ContentVersionModule,
     DocumentVersionModule,
     NodeVersionModule,
     PermissionModule,

@@ -22,9 +22,16 @@ export class NodeService {
                 id: documentId,
             });
 
+            if (["subchapter", "page"].includes(nodeDto.type)) {
+                await manager.findOneByOrFail(Node, {
+                    id: nodeDto.parentId,
+                })
+            }
+
             const node = manager.create(Node, {
                 ...nodeDto,
-                document: { id: documentId }, // partial relation
+                parent: { id: nodeDto.parentId },
+                document: { id: documentId },
             });
 
             const savedNode = await manager.save(node);
@@ -81,4 +88,47 @@ export class NodeService {
 
         return node
     }
+
+    async getDocumentTree(documentId: string) {
+  const nodes = await this.nodeRepository.find({
+    where: {
+      document: { id: documentId },
+    },
+    relations: ["parent"],
+    order: {
+      orderIndex: "ASC",
+    },
+  });
+
+  return this.buildTree(nodes);
+}
+
+private buildTree(nodes: Node[]) {
+  const nodeMap = new Map<string, any>();
+  const roots: any[] = [];
+
+  for (const node of nodes) {
+    nodeMap.set(node.id, {
+      id: node.id,
+      title: node.title,
+      type: node.type,
+      orderIndex: node.orderIndex,
+      children: [],
+    });
+  }
+
+  for (const node of nodes) {
+    const current = nodeMap.get(node.id);
+
+    if (node.parent) {
+      const parent = nodeMap.get(node.parent.id);
+      parent.children.push(current);
+    } else {
+      roots.push(current);
+    }
+  }
+
+  return roots;
+}
+
 }

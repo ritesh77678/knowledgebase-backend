@@ -29,6 +29,13 @@ export class ContentService {
         return await this.contentRepository.save(content)
     }
 
+    async saveContentByNodeId(nodeId: string, contentDto: ContentDto){
+        const content = await this.getContentByNodeId(nodeId)
+        content.content = contentDto.content
+
+        return await this.contentRepository.save(content)
+    }
+
     async deleteContentByNodeId(nodeId: string) {
         const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })
         if (!content) throw new NotFoundException("Content not found")
@@ -41,16 +48,26 @@ export class ContentService {
 
     async getContentByNodeId(nodeId: string) {
 
-        const cacheKey = `content:${nodeId}`
-        const cachedContent = await this.redisService.get(cacheKey)
+        // const cacheKey = `content:${nodeId}`
+        // const cachedContent = await this.redisService.get(cacheKey)
 
-        if (cachedContent) return JSON.parse(cachedContent)
+        // if (cachedContent) return JSON.parse(cachedContent)
 
-        const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })
+        // const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })
+        // if (!content) throw new NotFoundException("Content not found")
+
+        // await this.redisService.set(cacheKey, JSON.stringify(content), 3600000)
+
+        // return content
+
+        const content = await this.contentRepository.findOne({where: {node: {id: nodeId}}})
         if (!content) throw new NotFoundException("Content not found")
+        return content
+    }
 
-        await this.redisService.set(cacheKey, JSON.stringify(content), 3600000)
-
+    async getContentById(contentId: string){
+        const content =  await this.contentRepository.findOne({where: {id: contentId}})
+        if (!content) throw new NotFoundException("Content not found")
         return content
     }
 }

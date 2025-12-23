@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Node } from "../node/node.entity";
+import { ContentVersion } from "../content-version/content-version.entity";
 
 @Entity()
 @Unique(["node"])
@@ -14,6 +15,9 @@ export class Content {
     @OneToOne(() => Node, (node) => node.content, {onDelete: "CASCADE"})
     @JoinColumn({name: "node_id"})
     node: Node
+
+    @OneToMany(() => ContentVersion, (contentVersion) => contentVersion.content)
+    contentVersions: ContentVersion[]
 
     @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     createdAt: Date

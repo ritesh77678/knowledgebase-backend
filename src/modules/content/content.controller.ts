@@ -17,10 +17,20 @@ export class ContentController {
         return await this.contentService.saveContent(id, contentDto)
     }
 
+    @Post("node/:nodeId")
+    async saveContentByNodeId(
+        @Param("nodeId") nodeId: string,
+        @Body() contentDto: ContentDto
+    ){
+        return await this.contentService.saveContentByNodeId(nodeId, contentDto)
+    }
+
     @Delete(":nodeId")
     async deleteContent(
         @Param("nodeId") nodeId: string
+        
     ){
+        console.log(nodeId)
         return await this.contentService.deleteContentByNodeId(nodeId)
     }
 

@@ -1,10 +1,20 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Node } from "../node/node.entity";
 import { DocumentVersion } from "../document-version/document-version.entity";
 import { Permission } from "../permission/permission.entity";
 
+export enum DocumentStatus {
+    DRAFT = 'draft',
+    PRIVATE = 'private',
+    DELETED = 'deleted',
+    PUBLISHED = 'published'
+}
+
 @Entity()
 @Unique(["title", "communityId"])
+@Index(['authorId'])
+@Index(['communityId'])
+@Index(['status'])
 export class Document {
     
     @PrimaryGeneratedColumn("uuid")
@@ -20,11 +30,16 @@ export class Document {
     authorId: string
 
     @Column()
+    @Index()
     communityId: string
 
-    @Column({type: "enum", enum: ['draft', 'private', 'deleted', 'published'], default: "draft"})
-    status: 'draft' | 'private' | 'deleted' | 'published'
-    
+    @Column({
+        type: "enum", 
+        enum: DocumentStatus, 
+        default: DocumentStatus.DRAFT
+    })
+    status: DocumentStatus
+
     @OneToMany(() => Node, (node) => node.document)
     nodes: Node[]
 
@@ -38,9 +53,13 @@ export class Document {
     @JoinColumn({name: "publishedVersionId"})
     publishedVersion: DocumentVersion
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @CreateDateColumn()
     createdAt: Date
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @UpdateDateColumn()
     updatedAt: Date
+
+    isAccessible(): boolean {
+        return this.status !== DocumentStatus.DELETED
+    }
 }

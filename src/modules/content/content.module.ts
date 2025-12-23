@@ -13,6 +13,7 @@ import { NodeModule } from "../node/node.module";
         NodeModule
     ],
     controllers: [ContentController],
-    providers: [ContentService]
+    providers: [ContentService],
+    exports: [ContentService]
 })
 export class ContentModule {}

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Document } from "../document/document.entity";
 import { NodeVersion } from "../node-version/node-version.entity";
 import { Content } from "../content/content.entity";
@@ -37,9 +37,9 @@ export class Node {
     @OneToMany(() => NodeVersion, (nodeVersion) => nodeVersion.node)
     nodeVersions: NodeVersion[]
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @UpdateDateColumn()
     updatedAt: Date
 }

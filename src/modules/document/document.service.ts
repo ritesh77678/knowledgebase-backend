@@ -1,65 +1,148 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Document } from "./document.entity";
-import { Repository } from "typeorm";
-import { CreateDocumentDto } from "./dto/create-document.dto";
-import { UpdateDocumentDto } from "./dto/update-document.dto";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Document, DocumentStatus } from './document.entity';
+import { Not, Repository } from 'typeorm';
+import { CreateDocumentDto } from './dto/create-document.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
+import { Logger } from '@nestjs/common';
+import { Node } from '../node/node.entity';
 
 @Injectable()
 export class DocumentService {
-    
-    constructor(
-        @InjectRepository(Document) private readonly documentRepository: Repository<Document>
-    ){}
+  private readonly logger = new Logger(DocumentService.name);
+  constructor(
+    @InjectRepository(Document) private readonly documentRepository: Repository<Document>,
+    @InjectRepository(Node) private readonly nodeRepository: Repository<Node>,
+  ) {}
 
-    async createDocument(documentDto: CreateDocumentDto){
+  async createDocument(documentDto: CreateDocumentDto) {
+    try {
+      const document = this.documentRepository.create(documentDto);
+      const saved = await this.documentRepository.save(document);
 
-        const exists = await this.documentRepository.findOne({where: {title: documentDto.title, communityId: documentDto.communityId}})
-        if (exists) throw new ConflictException("Document already exists")
+      this.logger.log(
+        `Document created: ${saved.id} by author: ${documentDto.authorId}`,
+      );
 
-        const document = this.documentRepository.create(documentDto)
-        return await this.documentRepository.save(document)
+      return saved;
+    } catch (error) {
+      if (error.code === '23505') {
+        // PostgreSQL unique violation
+        throw new ConflictException(
+          `A document with title "${documentDto.title}" already exists in this community`,
+        );
+      }
+      throw error;
+    }
+  }
+
+  async updateDocument(id: string, documentDto: UpdateDocumentDto) {
+    const { title, description, status } = documentDto;
+
+    const document = await this.documentRepository.findOne({ where: { id } });
+    if (!document) throw new NotFoundException('Document not found');
+
+    title && (document.title = title);
+    description && (document.description = description);
+    status && (document.description = status);
+
+    return await this.documentRepository.save(document);
+  }
+
+  async deleteDocument(id: string) {
+    const document = await this.documentRepository.findOne({ where: { id } });
+    if (!document) throw new NotFoundException('Document not found');
+
+    if (document.status === DocumentStatus.DELETED)
+      throw new BadRequestException('Document already deleted');
+
+    document.status = DocumentStatus.DELETED;
+    return await this.documentRepository.save(document);
+  }
+
+  async permanentDelete(id: string) {
+    const document = await this.getDocumentById(id);
+    await this.documentRepository.remove(document);
+    this.logger.warn('Document deleted permanentely');
+  }
+
+  async getDocumentById(id: string) {
+    const document = await this.documentRepository.findOne({ where: { id } });
+    if (!document) throw new NotFoundException('Document not found');
+
+    return document;
+  }
+
+  async getDocumentByAuthor(authorId: string) {
+    const document = await this.documentRepository.find({
+      where: { authorId, status: Not(DocumentStatus.DELETED) },
+    });
+    if (!document) throw new NotFoundException('Document not found');
+
+    return document;
+  }
+
+  async getDocumentByCommunity(communityId: string) {
+    const document = await this.documentRepository.find({
+      where: { communityId },
+    });
+    if (!document) throw new NotFoundException('Document not found');
+
+    return document;
+  }
+
+  async getDocumentTree(documentId: string) {
+    console.log(documentId)
+    const document = await this.getDocumentById(documentId)
+    const nodes = await this.nodeRepository.find({
+        where: {
+            document: { id: documentId },
+        },
+        relations: ['parent'],
+        order: {
+            orderIndex: 'ASC',
+        },
+    });
+
+    console.log(document)
+    console.log(nodes)
+
+    return {
+      document, 
+      tree: this.buildTree(nodes)
+    }
+  }
+
+  private buildTree(nodes: Node[]) {
+    const nodeMap = new Map<string, any>();
+    const roots: any[] = [];
+
+    for (const node of nodes) {
+      nodeMap.set(node.id, {
+        id: node.id,
+        title: node.title,
+        type: node.type,
+        orderIndex: node.orderIndex,
+        children: [],
+      });
     }
 
-    async updateDocument(id: string, documentDto: UpdateDocumentDto){
+    for (const node of nodes) {
+      const current = nodeMap.get(node.id);
 
-        const {title, description} = documentDto
-
-        const document = await this.documentRepository.findOne({where: {id}}) 
-        if (!document) throw new NotFoundException("Document not found")
-
-        title && (document.title = title)
-        description && (document.description = description)
-        
-        return await this.documentRepository.save(document)
+      if (node.parent) {
+        const parent = nodeMap.get(node.parent.id);
+        parent.children.push(current);
+      } else {
+        roots.push(current);
+      }
     }
 
-    async deleteDocument(id: string){
-        const document = await this.documentRepository.findOne({where: {id}})
-        if (!document) throw new NotFoundException("Document not found")
-
-        document.status = "deleted"
-        return await this.documentRepository.save(document)
-    }
-
-    async getDocumentById(id: string){
-        const document = await this.documentRepository.findOne({where: {id}})
-        if (!document) throw new NotFoundException("Document not found")
-
-        return document
-    }
-
-    async getDocumentByAuthor(authorId: string){
-        const document = await this.documentRepository.find({where: {authorId}})
-        if (!document) throw new NotFoundException("Document not found")
-
-        return document
-    }
-
-    async getDocumentByCommunity(communityId: string){
-        const document = await this.documentRepository.find({where: {communityId}})
-        if (!document) throw new NotFoundException("Document not found")
-
-        return document
-    }
+    return roots;
+  }
 }

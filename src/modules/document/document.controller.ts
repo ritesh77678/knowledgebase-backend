@@ -14,6 +14,7 @@ export class DocumentController {
     async createDocument(
         @Body() documentDto: CreateDocumentDto
     ){
+        console.log(documentDto)
         return await this.documentService.createDocument(documentDto)
     }
 
@@ -52,4 +53,10 @@ export class DocumentController {
     ){
         return await this.documentService.getDocumentByCommunity(communityId)
     }   
+
+    @Get("tree/:documentId")
+    async getTree(@Param("documentId") documentId: string){
+        console.log(documentId)
+        return await this.documentService.getDocumentTree(documentId)
+    }
 }

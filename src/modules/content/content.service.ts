@@ -19,22 +19,22 @@ export class ContentService {
         return await this.contentRepository.save({node: {id: nodeId}})
     }
 
-    async saveContent(contentId: string, contentDto: ContentDto){
+    // async saveContent(contentId: string, contentDto: ContentDto){
 
-        const content = await this.contentRepository.findOne({where: {id: contentId}})
-        if (!content) throw new NotFoundException("Content not found")
+    //     const content = await this.contentRepository.findOne({where: {id: contentId}})
+    //     if (!content) throw new NotFoundException("Content not found")
 
-        content.content = contentDto.content
+    //     content.content = contentDto.content
 
-        return await this.contentRepository.save(content)
-    }
+    //     return await this.contentRepository.save(content)
+    // }
 
-    async saveContentByNodeId(nodeId: string, contentDto: ContentDto){
-        const content = await this.getContentByNodeId(nodeId)
-        content.content = contentDto.content
+    // async saveContentByNodeId(nodeId: string, contentDto: ContentDto){
+    //     const content = await this.getContentByNodeId(nodeId)
+    //     content.content = contentDto.content
 
-        return await this.contentRepository.save(content)
-    }
+    //     return await this.contentRepository.save(content)
+    // }
 
     async deleteContentByNodeId(nodeId: string) {
         const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })

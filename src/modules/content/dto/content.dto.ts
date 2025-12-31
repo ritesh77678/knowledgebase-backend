@@ -1,7 +1,14 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class ContentDto {
 
+    @IsString()
+    @IsOptional()
+    message: string
+
     @IsNotEmpty()
-    content: any
+    contentId: string
+
+    @IsNotEmpty()
+    snapShort: any
 }

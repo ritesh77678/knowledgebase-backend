@@ -2,35 +2,43 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ContentVersion } from './content-version.entity';
-import { ContentVersionDto } from './dto/content-version.dto';
 import { ContentService } from '../content/content.service';
 
 @Injectable()
 export class ContentVersionService {
   constructor(
-    @InjectRepository(ContentVersion)
-    private readonly contentVersionRepository: Repository<ContentVersion>,
+    @InjectRepository(ContentVersion) private readonly contentVersionRepository: Repository<ContentVersion>,
     private readonly contentService: ContentService,
   ) {}
 
-  async createContentVersion(
-    contentId: string,
-    contentVersionDto: ContentVersionDto,
-  ) {
-    const content = await this.contentService.getContentById(contentId)
+  async getContentVersion(id: string){
+    const contentVersion = await this.contentVersionRepository.findOne({
+      where: { id },
+    });
+    if (!contentVersion) throw new NotFoundException('Content version not found');
+    return contentVersion
+  }
 
-    const oldVersions = await this.contentVersionRepository
-      .createQueryBuilder('cv')
-      .where('cv.contentId = :contentId', { contentId })
-      .orderBy('cv.createdAt', 'DESC')
-      .offset(5)
-      .getMany();
+  async getAllContentVersion(id: string){
 
-    if (oldVersions.length) {
-      await this.contentVersionRepository.remove(oldVersions);
-    }
+    const content = await this.contentService.getContentById(id)
 
-    return content
+    const contentVersion = await this.contentVersionRepository.find({
+      where: { content: {id}},
+      select: [
+        "id",
+        "message",
+        "createdAt",
+        "updatedAt",
+      ],
+      order: {
+        "createdAt": "DESC"
+      }
+    });
+
+    if (!contentVersion) throw new NotFoundException('Content version not found');
+
+    return contentVersion
   }
 
   async getContentVersionById(contentVersionId: string) {

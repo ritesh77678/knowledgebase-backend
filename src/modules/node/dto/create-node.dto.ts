@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateIf } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, ValidateIf, ValidationError } from "class-validator";
 
 export class CreateNodeDto {
     
@@ -13,11 +13,11 @@ export class CreateNodeDto {
     @IsString()
     authorId: string
 
-    @IsString()
-    orderIndex: string
+    @IsNumber()
+    orderIndex: number
 
-    @ValidateIf(dto => dto.type === "subchapter" || dto.type === "page")
+    @ValidateIf((o) => o.type === 'subchapter')
     @IsUUID()
     @IsNotEmpty()
-    parentId?: string
-}
+    parentId: string
+}   

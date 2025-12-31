@@ -1,24 +1,30 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Content } from "../content/content.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Content } from '../content/content.entity';
 
 @Entity()
 export class ContentVersion {
- 
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({type: "jsonb"})
-    snapShort: any
+  @Column({ type: 'jsonb' })
+  snapShort: any;
 
-    @Column()
-    version: string
+  @Column({ nullable: true })
+  message: string;
 
-    @ManyToOne(() => Content, (content) => content.contentVersions)
-    content: Content
+  @ManyToOne(() => Content, (content) => content.contentVersions, {onDelete: "CASCADE"})
+  content: Content;
 
-    @CreateDateColumn()
-    createdAt: Date
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

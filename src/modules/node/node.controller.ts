@@ -15,6 +15,8 @@ export class NodeController {
         @Param("id") id: string,
         @Body() nodeDto: CreateNodeDto
     ){
+
+        console.log(nodeDto)
         return await this.nodeService.createNode(id, nodeDto)
     }
 
@@ -30,6 +32,7 @@ export class NodeController {
     async deleteNode(
         @Param("id") id: string
     ){
+        console.log("deleting node", id)
         return await this.nodeService.deleteNode(id)
     }
 

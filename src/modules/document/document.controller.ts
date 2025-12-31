@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/commo
 import { DocumentService } from "./document.service";
 import { CreateDocumentDto } from "./dto/create-document.dto";
 import { UpdateDocumentDto } from "./dto/update-document.dto";
+import { DocumentStatus } from "./document.entity";
 
 @Controller("document")
 export class DocumentController {
@@ -58,5 +59,15 @@ export class DocumentController {
     async getTree(@Param("documentId") documentId: string){
         console.log(documentId)
         return await this.documentService.getDocumentTree(documentId)
+    }
+
+    @Get("status/:status")
+    async getDocumentByStatus(@Param("status") status: DocumentStatus){
+        return await this.documentService.getDocumentByStatus(status)
+    }
+
+    @Get()
+    async getAllDocuments(){
+        return await this.documentService.getAllDocuments()
     }
 }

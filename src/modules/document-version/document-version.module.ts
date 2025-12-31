@@ -4,11 +4,13 @@ import { DocumentVersionController } from "./document-version.controller";
 import { DocumentVersionService } from "./document-version.service";
 import { Module } from "@nestjs/common";
 import { DocumentModule } from "../document/document.module";
+import { Document } from "../document/document.entity";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-            DocumentVersion
+            DocumentVersion,
+            Document
         ]),
         DocumentModule
     ],

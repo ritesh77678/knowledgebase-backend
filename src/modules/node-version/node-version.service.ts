@@ -16,10 +16,10 @@ export class NodeVersionService {
     async createNodeVersion(nodeId: string, nodeVersionDto: NodeVersionDto) {
         const node = await this.nodeService.getNodeById(nodeId);
 
-        const nodeVersion = this.nodeVersionRepository.create(nodeVersionDto);
-        nodeVersion.node = node;
+        // const nodeVersion = this.nodeVersionRepository.create(nodeVersionDto);
+        // nodeVersion.node = node;
 
-        return await this.nodeVersionRepository.save(nodeVersion);
+        // return await this.nodeVersionRepository.save(nodeVersion);
     }
 
     async deleteNodeVersion(nodeVersionId: string) {
@@ -37,7 +37,7 @@ export class NodeVersionService {
 
     async getAllNodeVersions(nodeId: string){
         const nodeVersion = await this.nodeVersionRepository.find({
-            where: {node: {id: nodeId}},
+            // where: {node: {id: nodeId}},
             select: ["id", "version", "createdAt"],
         });
         if (!nodeVersion) throw new NotFoundException("Node version not found");

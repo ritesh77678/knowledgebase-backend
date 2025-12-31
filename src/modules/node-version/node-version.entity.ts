@@ -16,8 +16,8 @@ export class NodeVersion {
     @Column()
     version: string
 
-    @ManyToOne(() => Node, (node) => node.nodeVersions)
-    node: Node
+    // @ManyToOne(() => Node, (node) => node.nodeVersions)
+    // node: Node
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date

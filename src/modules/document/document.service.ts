@@ -29,10 +29,11 @@ export class DocumentService {
         `Document created: ${saved.id} by author: ${documentDto.authorId}`,
       );
 
+      console.log(saved)
+
       return saved;
     } catch (error) {
       if (error.code === '23505') {
-        // PostgreSQL unique violation
         throw new ConflictException(
           `A document with title "${documentDto.title}" already exists in this community`,
         );
@@ -96,26 +97,58 @@ export class DocumentService {
     return document;
   }
 
+
+  async getAllDocuments(){
+    const document = await this.documentRepository.find({
+      where: {
+        status: Not(DocumentStatus.DELETED)
+      },
+      select: [
+        "id",
+        "title",
+        "description",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      order: {
+        createdAt: "DESC"
+      },
+      take: 10
+    })
+    if(!document) throw new NotFoundException('Document not found')
+
+    return document
+  }
+
+  async getDocumentByStatus(status: DocumentStatus){
+    const document = await this.documentRepository.find({
+      where: { status },
+      select: [
+        "id",
+        "title",
+        "description",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    });
+    if (!document) throw new NotFoundException('Document not found');
+    return document;
+  }
+
   async getDocumentTree(documentId: string) {
-    console.log(documentId)
-    const document = await this.getDocumentById(documentId)
     const nodes = await this.nodeRepository.find({
         where: {
             document: { id: documentId },
         },
-        relations: ['parent'],
+        relations: ['parent', 'content'],
         order: {
             orderIndex: 'ASC',
         },
     });
 
-    console.log(document)
-    console.log(nodes)
-
-    return {
-      document, 
-      tree: this.buildTree(nodes)
-    }
+    return this.buildTree(nodes)
   }
 
   private buildTree(nodes: Node[]) {
@@ -127,7 +160,9 @@ export class DocumentService {
         id: node.id,
         title: node.title,
         type: node.type,
+        contentId: node.content.id,
         orderIndex: node.orderIndex,
+        parentId: node.parent?.id,
         children: [],
       });
     }
@@ -136,7 +171,7 @@ export class DocumentService {
       const current = nodeMap.get(node.id);
 
       if (node.parent) {
-        const parent = nodeMap.get(node.parent.id);
+        const parent = nodeMap.get(node.parent?.id);
         parent.children.push(current);
       } else {
         roots.push(current);

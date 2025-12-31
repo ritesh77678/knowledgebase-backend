@@ -9,21 +9,21 @@ export class ContentController {
         private readonly contentService: ContentService
     ) {}
 
-    @Post(":id")
-    async saveContent(
-        @Param("id") id: string,
-        @Body() contentDto: ContentDto
-    ){
-        return await this.contentService.saveContent(id, contentDto)
-    }
+    // @Post(":id")
+    // async saveContent(
+    //     @Param("id") id: string,
+    //     @Body() contentDto: ContentDto
+    // ){
+    //     return await this.contentService.saveContent(id, contentDto)
+    // }
 
-    @Post("node/:nodeId")
-    async saveContentByNodeId(
-        @Param("nodeId") nodeId: string,
-        @Body() contentDto: ContentDto
-    ){
-        return await this.contentService.saveContentByNodeId(nodeId, contentDto)
-    }
+    // @Post("node/:nodeId")
+    // async saveContentByNodeId(
+    //     @Param("nodeId") nodeId: string,
+    //     @Body() contentDto: ContentDto
+    // ){
+    //     return await this.contentService.saveContentByNodeId(nodeId, contentDto)
+    // }
 
     @Delete(":nodeId")
     async deleteContent(

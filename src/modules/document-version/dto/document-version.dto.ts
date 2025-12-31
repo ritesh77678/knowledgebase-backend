@@ -1,6 +1,9 @@
-import { IsArray, IsJSON, IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { IsArray, IsJSON, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator"
 
 export class DocumentVersionDto {
+
+    @IsUUID()
+    documentId: string
 
     @IsString()
     @IsNotEmpty()

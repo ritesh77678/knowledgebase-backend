@@ -1,10 +1,8 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Document } from "../document/document.entity";
-import { NodeVersion } from "../node-version/node-version.entity";
 import { Content } from "../content/content.entity";
 
 @Entity()
-@Unique(["title", "parent", "document"])
 export class Node {
 
     @PrimaryGeneratedColumn("uuid")
@@ -20,22 +18,19 @@ export class Node {
     authorId: string
 
     @Column()
-    orderIndex: string
+    orderIndex: number
 
-    @ManyToOne(() => Node, (node) => node.children, {nullable: true})
+    @ManyToOne(() => Node, (node) => node.children, {nullable: true, onDelete: "CASCADE"})
     parent: Node
 
-    @OneToMany(() => Node, (node) => node.parent, {onDelete: "CASCADE"})
+    @OneToMany(() => Node, (node) => node.parent)
     children: Node[]
 
-    @OneToOne(() => Content, (content) => content.node)
+    @OneToOne(() => Content, (content) => content.node, {cascade: true, nullable: true})
     content: Content
 
     @ManyToOne(() => Document, (document) => document.nodes, {onDelete: "CASCADE"})
     document: Document
-
-    @OneToMany(() => NodeVersion, (nodeVersion) => nodeVersion.node)
-    nodeVersions: NodeVersion[]
 
     @CreateDateColumn()
     createdAt: Date

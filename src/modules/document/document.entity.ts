@@ -12,9 +12,9 @@ export enum DocumentStatus {
 
 @Entity()
 @Unique(["title", "communityId"])
-@Index(['authorId'])
-@Index(['communityId'])
-@Index(['status'])
+// @Index(['authorId'])
+// @Index(['communityId'])
+// @Index(['status'])
 export class Document {
     
     @PrimaryGeneratedColumn("uuid")
@@ -26,7 +26,7 @@ export class Document {
     @Column()
     description: string
     
-    @Column()
+    @Column({nullable: true})
     authorId: string
 
     @Column()
@@ -49,7 +49,7 @@ export class Document {
     @OneToMany(() => Permission, (permission) => permission.document)
     permissions: Permission[]
 
-    @ManyToOne(() => DocumentVersion, {nullable: true})
+    @OneToOne(() => DocumentVersion, {nullable: true})
     @JoinColumn({name: "publishedVersionId"})
     publishedVersion: DocumentVersion
 

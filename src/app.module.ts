@@ -32,7 +32,6 @@ import { ContentVersion } from './modules/content-version/content-version.entity
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      // entities: [__dirname + '/**/*.entity{.ts,.js}'],
       entities: [
         Document,
         Node,
@@ -41,10 +40,9 @@ import { ContentVersion } from './modules/content-version/content-version.entity
         DocumentVersion,
         NodeVersion,
         Permission,
-
       ],
-      synchronize: false,
-      migrationsRun: true
+      synchronize: true,
+      autoLoadEntities: true
     }),
     RedisModule,
     AutoSaveModule,

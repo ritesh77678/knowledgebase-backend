@@ -1,16 +1,12 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Node } from "../node/node.entity";
 import { ContentVersion } from "../content-version/content-version.entity";
 
 @Entity()
-@Unique(["node"])
 export class Content {
     
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
-    @Column({type: "jsonb", nullable: true})
-    content: any[]
 
     @OneToOne(() => Node, (node) => node.content, {onDelete: "CASCADE"})
     @JoinColumn({name: "node_id"})
@@ -19,9 +15,13 @@ export class Content {
     @OneToMany(() => ContentVersion, (contentVersion) => contentVersion.content)
     contentVersions: ContentVersion[]
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @OneToOne(() => ContentVersion, {onDelete: "CASCADE"})
+    @JoinColumn({name: "publishedContent"})
+    publishedVersion: ContentVersion
+
+    @CreateDateColumn()
     createdAt: Date
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @UpdateDateColumn()
     updatedAt: Date
 }

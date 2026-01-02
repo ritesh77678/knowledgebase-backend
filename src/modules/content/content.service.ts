@@ -1,73 +1,88 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Content } from "./content.entity";
-import { ContentDto } from "./dto/content.dto";
-import { Repository } from "typeorm";
-import { RedisService } from "../redis/redis.service";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Content } from './content.entity';
+import { Repository } from 'typeorm';
+import { RedisService } from '../redis/redis.service';
+import { ContentVersionService } from '../content-version/content-version.service';
+import { ContentVersion } from '../content-version/content-version.entity';
 
 @Injectable()
 export class ContentService {
-    constructor(
-        @InjectRepository(Content) private readonly contentRepository: Repository<Content>,
-        private readonly redisService: RedisService
-    ) { }
+  constructor(
+    @InjectRepository(Content)
+    private readonly contentRepository: Repository<Content>,
+    @InjectRepository(ContentVersion)
+    private readonly contentVersionRepository: Repository<ContentVersion>,
+    private readonly contentVersionService: ContentVersionService,
+    private readonly redisService: RedisService,
+  ) {}
 
-    async createContent(nodeId: string){
-        const exists = await this.contentRepository.findOne({where: {node: {id: nodeId}}})
-        if (exists) throw new ConflictException("Content already exists")
+  async createContent(nodeId: string) {
+    const exists = await this.contentRepository.findOne({
+      where: { node: { id: nodeId } },
+    });
+    if (exists) throw new ConflictException('Content already exists');
 
-        return await this.contentRepository.save({node: {id: nodeId}})
-    }
+    return await this.contentRepository.save({ node: { id: nodeId } });
+  }
 
-    // async saveContent(contentId: string, contentDto: ContentDto){
+  async updatePublishedVersion(contentId: string, versionId: string) {
+    const contentVersion =
+      await this.contentVersionService.getContentVersion(versionId);
 
-    //     const content = await this.contentRepository.findOne({where: {id: contentId}})
-    //     if (!content) throw new NotFoundException("Content not found")
+    const content = await this.getContentById(contentId);
+    content.publishedVersion = contentVersion;
+    return await this.contentRepository.save(content);
+  }
 
-    //     content.content = contentDto.content
+  async deleteContentByNodeId(nodeId: string) {
+    const content = await this.contentRepository.findOne({
+      where: { node: { id: nodeId } },
+    });
+    if (!content) throw new NotFoundException('Content not found');
 
-    //     return await this.contentRepository.save(content)
-    // }
+    const cacheKey = `content:${nodeId}`;
+    await this.redisService.del(cacheKey);
 
-    // async saveContentByNodeId(nodeId: string, contentDto: ContentDto){
-    //     const content = await this.getContentByNodeId(nodeId)
-    //     content.content = contentDto.content
+    return await this.contentRepository.remove(content);
+  }
 
-    //     return await this.contentRepository.save(content)
-    // }
+  async getContentByNodeId(nodeId: string) {
+    const content = await this.contentRepository.findOne({
+      where: { node: { id: nodeId } },
+    });
+    if (!content) throw new NotFoundException('Content not found');
+    return content;
+  }
 
-    async deleteContentByNodeId(nodeId: string) {
-        const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })
-        if (!content) throw new NotFoundException("Content not found")
+  async getContentById(contentId: string) {
+    const content = await this.contentRepository.findOne({
+      where: { id: contentId },
+    });
+    if (!content) throw new NotFoundException('Content not found');
+    return content;
+  }
 
-        const cacheKey = `content:${nodeId}`
-        await this.redisService.del(cacheKey)
+  async getAllContentVersion(id: string) {
 
-        return await this.contentRepository.remove(content)
-    }
+    const content = await this.getContentById(id);
+    const contentVersion = await this.contentVersionRepository.find({
+      where: { content: {id} },
+      select: ['id', 'message', 'createdAt', 'updatedAt'],
+      order: {
+        createdAt: 'DESC',
+      },
+    });
 
-    async getContentByNodeId(nodeId: string) {
+    console.log("content version", contentVersion)
 
-        // const cacheKey = `content:${nodeId}`
-        // const cachedContent = await this.redisService.get(cacheKey)
+    if (!contentVersion)
+      throw new NotFoundException('Content version not found');
 
-        // if (cachedContent) return JSON.parse(cachedContent)
-
-        // const content = await this.contentRepository.findOne({ where: { node: { id: nodeId } } })
-        // if (!content) throw new NotFoundException("Content not found")
-
-        // await this.redisService.set(cacheKey, JSON.stringify(content), 3600000)
-
-        // return content
-
-        const content = await this.contentRepository.findOne({where: {node: {id: nodeId}}})
-        if (!content) throw new NotFoundException("Content not found")
-        return content
-    }
-
-    async getContentById(contentId: string){
-        const content =  await this.contentRepository.findOne({where: {id: contentId}})
-        if (!content) throw new NotFoundException("Content not found")
-        return content
-    }
+    return contentVersion;
+  }
 }

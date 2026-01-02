@@ -6,9 +6,9 @@ import { ContentService } from '../content/content.service';
 
 @Injectable()
 export class ContentVersionService {
+  
   constructor(
     @InjectRepository(ContentVersion) private readonly contentVersionRepository: Repository<ContentVersion>,
-    private readonly contentService: ContentService,
   ) {}
 
   async getContentVersion(id: string){
@@ -16,28 +16,6 @@ export class ContentVersionService {
       where: { id },
     });
     if (!contentVersion) throw new NotFoundException('Content version not found');
-    return contentVersion
-  }
-
-  async getAllContentVersion(id: string){
-
-    const content = await this.contentService.getContentById(id)
-
-    const contentVersion = await this.contentVersionRepository.find({
-      where: { content: {id}},
-      select: [
-        "id",
-        "message",
-        "createdAt",
-        "updatedAt",
-      ],
-      order: {
-        "createdAt": "DESC"
-      }
-    });
-
-    if (!contentVersion) throw new NotFoundException('Content version not found');
-
     return contentVersion
   }
 

@@ -27,6 +27,13 @@ export class DocumentController {
         return await this.documentService.updateDocument(id, documentDto)
     }
 
+    @Patch("published/:id")
+    async publishedDocument(
+        @Param("id") id: string
+    ){
+        return await this.documentService.publishedDocument(id)
+    }
+
     @Delete(":id")
     async deleteDocument(
         @Param("id") id: string

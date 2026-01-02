@@ -71,15 +71,6 @@ export class NodeService {
     return await this.nodeRepository.save(node);
   }
 
-  // async deleteNode(id: string) {
-  //     const node = await this.nodeRepository.findOne({ where: { id } })
-  //     if (!node) throw new NotFoundException("Node not found")
-
-  //     console.log("node deleted", node)
-
-  //     return await this.nodeRepository.remove(node)
-  // }
-
   async deleteNode(id: string) {
     const result = await this.nodeRepository.delete(id);
 

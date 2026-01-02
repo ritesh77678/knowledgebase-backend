@@ -24,7 +24,7 @@ export class AutoSaveService {
         const payloadInString = JSON.stringify(updatedPayload)
 
         this.redisService.set(cacheKey, payloadInString)
-        this.redisService.xadd(
+        this.redisService.xadd( 
             streamKey,
             payloadInString
         )

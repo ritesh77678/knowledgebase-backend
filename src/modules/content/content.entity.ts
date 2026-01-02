@@ -12,6 +12,9 @@ export class Content {
     @JoinColumn({name: "node_id"})
     node: Node
 
+    // @Column({type: "jsonb", default: []})
+    // content: any
+
     @OneToMany(() => ContentVersion, (contentVersion) => contentVersion.content)
     contentVersions: ContentVersion[]
 

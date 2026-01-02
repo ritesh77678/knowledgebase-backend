@@ -1,29 +1,20 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { ContentService } from "./content.service";
-import { ContentDto } from "./dto/content.dto";
 
 @Controller("content")
 export class ContentController {
- 
+
     constructor(
         private readonly contentService: ContentService
     ) {}
 
-    // @Post(":id")
-    // async saveContent(
-    //     @Param("id") id: string,
-    //     @Body() contentDto: ContentDto
-    // ){
-    //     return await this.contentService.saveContent(id, contentDto)
-    // }
-
-    // @Post("node/:nodeId")
-    // async saveContentByNodeId(
-    //     @Param("nodeId") nodeId: string,
-    //     @Body() contentDto: ContentDto
-    // ){
-    //     return await this.contentService.saveContentByNodeId(nodeId, contentDto)
-    // }
+    @Patch(":contentId/:versionId")
+    async updatePublishedVersion(
+        @Param("contentId") contentId: string,
+        @Param("versionId") versionId: string
+    ){
+        return await this.contentService.updatePublishedVersion(contentId, versionId)
+    }
 
     @Delete(":nodeId")
     async deleteContent(
@@ -39,5 +30,12 @@ export class ContentController {
         @Param("nodeId") nodeId: string
     ){
         return await this.contentService.getContentByNodeId(nodeId)
+    }
+
+    @Get("versions/:contentId")
+    async getAllContentVersion(
+        @Param("contentId") contentId: string
+    ){
+        return await this.contentService.getAllContentVersion(contentId)
     }
 }

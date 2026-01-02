@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Node } from "../node/node.entity";
 import { DocumentVersion } from "../document-version/document-version.entity";
 import { Permission } from "../permission/permission.entity";
@@ -12,9 +12,6 @@ export enum DocumentStatus {
 
 @Entity()
 @Unique(["title", "communityId"])
-// @Index(['authorId'])
-// @Index(['communityId'])
-// @Index(['status'])
 export class Document {
     
     @PrimaryGeneratedColumn("uuid")

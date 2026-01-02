@@ -6,7 +6,7 @@ export class ContentVersionDto {
     contentId: string
 
     @IsNotEmpty()
-    snapShort: any
+    snapShot: any
 
     @IsString()
     @IsOptional()

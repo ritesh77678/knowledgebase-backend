@@ -1,5 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, NumericType, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Node } from "../node/node.entity";
+import { DocumentVersion } from "../document-version/document-version.entity";
+import { DocumentVersionNodes } from "../document-version-nodes/document-version-nodes.entity";
 
 @Entity()
 export class NodeVersion {
@@ -10,15 +12,30 @@ export class NodeVersion {
     @Column()
     title: string
 
-    @Column({type: "json"})
-    snapShort: JSON
+    @Column({type: "enum", enum: ['chapter', 'subchapter', 'page']})
+    type: 'chapter' | 'subchapter' | 'page'
 
     @Column()
-    version: string
+    orderIndex: number
 
-    // @ManyToOne(() => Node, (node) => node.nodeVersions)
-    // node: Node
+    @ManyToOne(() => NodeVersion, (nodeVersion) => nodeVersion.parent)
+    parent: NodeVersion
 
-    @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
+    @OneToMany(() => NodeVersion, (nodeVersion) => nodeVersion.parent)
+    children: NodeVersion[]
+
+    @Column({type: "jsonb"})
+    content: JSON
+
+    @ManyToOne(() => Node, (node) => node.nodeVersions)
+    node: Node
+
+    @OneToMany(() => DocumentVersionNodes, dvn => dvn.nodeVersions)
+    documentVersionNodes: DocumentVersionNodes[]
+
+    @CreateDateColumn()
     createdAt: Date
+
+    @UpdateDateColumn()
+    updatedAt: Date
 }

@@ -9,12 +9,6 @@ export class ContentVersionController {
         private readonly contentVersionService: ContentVersionService
     ) {}
 
-    @Get("/all/:id")
-    async getAllContentVersion(@Param("id") contentId: string){
-        console.log(contentId)
-        return this.contentVersionService.getAllContentVersion(contentId)
-    }
-
     @Get(":id")
     async getContentVersionById(
         @Param("id") id: string,

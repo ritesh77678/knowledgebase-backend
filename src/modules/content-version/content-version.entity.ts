@@ -14,7 +14,7 @@ export class ContentVersion {
   id: string;
 
   @Column({ type: 'jsonb' })
-  snapShort: any;
+  snapShot: any;
 
   @Column({ nullable: true })
   message: string;

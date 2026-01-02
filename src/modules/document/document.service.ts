@@ -16,7 +16,8 @@ import { Node } from '../node/node.entity';
 export class DocumentService {
   private readonly logger = new Logger(DocumentService.name);
   constructor(
-    @InjectRepository(Document) private readonly documentRepository: Repository<Document>,
+    @InjectRepository(Document)
+    private readonly documentRepository: Repository<Document>,
     @InjectRepository(Node) private readonly nodeRepository: Repository<Node>,
   ) {}
 
@@ -29,7 +30,7 @@ export class DocumentService {
         `Document created: ${saved.id} by author: ${documentDto.authorId}`,
       );
 
-      console.log(saved)
+      console.log(saved);
 
       return saved;
     } catch (error) {
@@ -42,16 +43,17 @@ export class DocumentService {
     }
   }
 
-  async updateDocument(id: string, documentDto: UpdateDocumentDto) {
-    const { title, description, status } = documentDto;
-
-    const document = await this.documentRepository.findOne({ where: { id } });
+  async publishedDocument(id: string){
+    const document = await this.getDocumentById(id);
     if (!document) throw new NotFoundException('Document not found');
+    document.status = DocumentStatus.PUBLISHED;
+    return await this.documentRepository.save(document);
+  }
 
-    title && (document.title = title);
-    description && (document.description = description);
-    status && (document.description = status);
-
+  async updateDocument(id: string, documentDto: UpdateDocumentDto) {
+    const document = await this.getDocumentById(id);
+    if (!document) throw new NotFoundException('Document not found');
+    Object.assign(document, documentDto);
     return await this.documentRepository.save(document);
   }
 
@@ -97,41 +99,40 @@ export class DocumentService {
     return document;
   }
 
-
-  async getAllDocuments(){
+  async getAllDocuments() {
     const document = await this.documentRepository.find({
       where: {
-        status: Not(DocumentStatus.DELETED)
+        status: Not(DocumentStatus.DELETED),
       },
       select: [
-        "id",
-        "title",
-        "description",
-        "status",
-        "createdAt",
-        "updatedAt"
+        'id',
+        'title',
+        'description',
+        'status',
+        'createdAt',
+        'updatedAt',
       ],
       order: {
-        createdAt: "DESC"
+        createdAt: 'DESC',
       },
-      take: 10
-    })
-    if(!document) throw new NotFoundException('Document not found')
+      take: 10,
+    });
+    if (!document) throw new NotFoundException('Document not found');
 
-    return document
+    return document;
   }
 
-  async getDocumentByStatus(status: DocumentStatus){
+  async getDocumentByStatus(status: DocumentStatus) {
     const document = await this.documentRepository.find({
       where: { status },
       select: [
-        "id",
-        "title",
-        "description",
-        "status",
-        "createdAt",
-        "updatedAt"
-      ]
+        'id',
+        'title',
+        'description',
+        'status',
+        'createdAt',
+        'updatedAt',
+      ],
     });
     if (!document) throw new NotFoundException('Document not found');
     return document;
@@ -139,45 +140,105 @@ export class DocumentService {
 
   async getDocumentTree(documentId: string) {
     const nodes = await this.nodeRepository.find({
-        where: {
-            document: { id: documentId },
-        },
-        relations: ['parent', 'content'],
-        order: {
-            orderIndex: 'ASC',
-        },
+      where: {
+        document: { id: documentId },
+      },
+      relations: ['parent', 'content'],
+      order: {
+        orderIndex: 'ASC',
+      },
     });
 
-    return this.buildTree(nodes)
+    return this.buildTree(nodes);
   }
-
   private buildTree(nodes: Node[]) {
     const nodeMap = new Map<string, any>();
     const roots: any[] = [];
 
+    // 1️⃣ Create all nodes first
     for (const node of nodes) {
       nodeMap.set(node.id, {
         id: node.id,
         title: node.title,
         type: node.type,
-        contentId: node.content.id,
         orderIndex: node.orderIndex,
-        parentId: node.parent?.id,
+        parentId: node.parent?.id ?? null,
+        contentId: node.content?.id ?? null,
         children: [],
       });
     }
 
+    // 2️⃣ Build hierarchy
     for (const node of nodes) {
       const current = nodeMap.get(node.id);
 
-      if (node.parent) {
-        const parent = nodeMap.get(node.parent?.id);
-        parent.children.push(current);
+      if (current.parentId) {
+        const parent = nodeMap.get(current.parentId);
+
+        // 🔒 Guard: parent might not exist
+        if (parent) {
+          parent.children.push(current);
+        } else {
+          // orphan node → treat as root
+          roots.push(current);
+        }
       } else {
         roots.push(current);
       }
     }
 
+    // 3️⃣ Optional: sort children by orderIndex
+    const sortTree = (items: any[]) => {
+      items.sort((a, b) => a.orderIndex - b.orderIndex);
+      items.forEach((item) => sortTree(item.children));
+    };
+
+    sortTree(roots);
+
     return roots;
   }
+
+  // async getDocumentTree(documentId: string) {
+  //   const nodes = await this.nodeRepository.find({
+  //       where: {
+  //           document: { id: documentId },
+  //       },
+  //       relations: ['parent', 'content'],
+  //       order: {
+  //           orderIndex: 'ASC',
+  //       },
+  //   });
+
+  //   return this.buildTree(nodes)
+  // }
+
+  // private buildTree(nodes: Node[]) {
+  //   const nodeMap = new Map<string, any>();
+  //   const roots: any[] = [];
+
+  //   for (const node of nodes) {
+  //     nodeMap.set(node.id, {
+  //       id: node.id,
+  //       title: node.title,
+  //       type: node.type,
+  //       contentId: node.content.id,
+  //       orderIndex: node.orderIndex,
+  //       parentId: node.parent?.id,
+  //       children: [],
+  //     });
+  //   }
+
+  //   for (const node of nodes) {
+  //     const current = nodeMap.get(node.id);
+
+  //     if (node.parent) {
+  //       const parent = nodeMap.get(node.parent?.id);
+  //       parent.children.push(current);
+  //     } else {
+  //       roots.push(current);
+  //     }
+  //   }
+
+  //   return roots;
+  // }
 }

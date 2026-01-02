@@ -8,7 +8,6 @@ import { ContentModule } from "../content/content.module";
 @Module({
     imports: [
         TypeOrmModule.forFeature([ContentVersion]),
-        ContentModule
     ],
     providers: [ContentVersionService],
     controllers: [ContentVersionController],

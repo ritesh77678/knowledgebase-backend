@@ -5,6 +5,8 @@ import { Document, DocumentStatus } from './modules/document/document.entity';
 import { Node } from './modules/node/node.entity';
 import { Content } from './modules/content/content.entity';
 import { ContentVersion } from './modules/content-version/content-version.entity';
+import { DocumentVersion } from './modules/document-version/document-version.entity';
+import { Permission } from './modules/permission/permission.entity';
 import { DataSource } from 'typeorm';
 import { randomUUID } from 'crypto';
 
@@ -16,6 +18,8 @@ async function bootstrap() {
   const nodeRepo = dataSource.getRepository(Node);
   const contentRepo = dataSource.getRepository(Content);
   const contentVersionRepo = dataSource.getRepository(ContentVersion);
+  const documentVersionRepo = dataSource.getRepository(DocumentVersion);
+  const permissionRepo = dataSource.getRepository(Permission);
 
   console.log('Starting mass data seeding...');
 
@@ -78,7 +82,7 @@ async function bootstrap() {
     for (let v = 1; v <= 5; v++) {
       const cv = new ContentVersion();
       cv.content = savedContent;
-      cv.snapShort = generateContent(title, description, v);
+      cv.snapShot = generateContent(title, description, v);
       cv.message = `Auto-save checkpoint ${v}`;
       const savedCv = await contentVersionRepo.save(cv);
       versions.push(savedCv);
@@ -107,7 +111,29 @@ async function bootstrap() {
       doc.status = status;
 
       const savedDoc = await documentRepo.save(doc);
-      // console.log(`  Created Document ${i}: ${savedDoc.title} [${savedDoc.status}]`);
+
+      // Create Permission for Author
+      const permission = new Permission();
+      permission.document = savedDoc;
+      permission.userId = savedDoc.authorId;
+      permission.spaceId = community.id;
+      permission.role = 'admin';
+      await permissionRepo.save(permission);
+
+      // Create Document Version if PUBLISHED
+      if (status === DocumentStatus.PUBLISHED) {
+        const docVersion = new DocumentVersion();
+        docVersion.document = savedDoc;
+        docVersion.version = 'v1.0'; // Initial published version
+        // docVersion.title = savedDoc.title;
+        // docVersion.description = savedDoc.description;
+        docVersion.snapShot = { meta: 'Initial seed snapshot' };
+
+        const savedDocVersion = await documentVersionRepo.save(docVersion);
+
+        savedDoc.publishedVersion = savedDocVersion;
+        await documentRepo.save(savedDoc);
+      }
 
       // 3. Create Structure (Reduced structure to keep seed time reasonable: 2 Chapters -> 1 Sub -> 1 Page)
       // Total nodes per doc: 2 Chapters + 2 Subs + 2 Pages = 6 nodes.

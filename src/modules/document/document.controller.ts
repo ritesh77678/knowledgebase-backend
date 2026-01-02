@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/commo
 import { DocumentService } from "./document.service";
 import { CreateDocumentDto } from "./dto/create-document.dto";
 import { UpdateDocumentDto } from "./dto/update-document.dto";
-import { DocumentStatus } from "./document.entity";
+import { DocumentStatus } from "../document-version/document-version.entity";
 
 @Controller("document")
 export class DocumentController {
@@ -27,18 +27,11 @@ export class DocumentController {
         return await this.documentService.updateDocument(id, documentDto)
     }
 
-    @Patch("published/:id")
-    async publishedDocument(
-        @Param("id") id: string
-    ){
-        return await this.documentService.publishedDocument(id)
-    }
-
     @Delete(":id")
     async deleteDocument(
         @Param("id") id: string
     ){
-        return await this.documentService.deleteDocument(id)
+        return await this.documentService.softDeleteDocument(id)
     }
 
     @Get(":id")

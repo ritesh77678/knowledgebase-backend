@@ -35,7 +35,7 @@ export class ContentService {
       await this.contentVersionService.getContentVersion(versionId);
 
     const content = await this.getContentById(contentId);
-    content.publishedVersion = contentVersion;
+    // content.publishedVersion = contentVersion;
     return await this.contentRepository.save(content);
   }
 

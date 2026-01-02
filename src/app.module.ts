@@ -19,6 +19,8 @@ import { NodeVersionModule } from './modules/node-version/node-version.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { ContentVersionModule } from './modules/content-version/content-version.module';
 import { ContentVersion } from './modules/content-version/content-version.entity';
+import { DocumentVersionNodes } from './modules/document-version-nodes/document-version-nodes.entity';
+import { DocumentVersionNodesModule } from './modules/document-version-nodes/document-version-nodes.module';
 
 @Module({
   imports: [
@@ -38,7 +40,8 @@ import { ContentVersion } from './modules/content-version/content-version.entity
         Content,
         ContentVersion,
         DocumentVersion,
-        NodeVersion,
+        DocumentVersionNodes,
+        // NodeVersion,
         Permission,
       ],
       synchronize: true,
@@ -51,8 +54,9 @@ import { ContentVersion } from './modules/content-version/content-version.entity
     ContentModule,
     ContentVersionModule,
     DocumentVersionModule,
-    NodeVersionModule,
-    PermissionModule,
+    DocumentVersionNodesModule,
+    // NodeVersionModule,
+    // PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

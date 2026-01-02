@@ -5,8 +5,9 @@ import { Repository } from 'typeorm';
 import { CreateNodeDto } from './dto/create-node.dto';
 import { UpdateNodeDto } from './dto/update-node.dto';
 import { DataSource } from 'typeorm';
-import { Document } from '../document/document.entity';
 import { Content } from '../content/content.entity';
+import { DocumentVersionNodes } from '../document-version-nodes/document-version-nodes.entity';
+import { DocumentVersion } from '../document-version/document-version.entity';
 
 @Injectable()
 export class NodeService {
@@ -15,10 +16,11 @@ export class NodeService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async createNode(documentId: string, nodeDto: CreateNodeDto) {
+  async createNode(documentVersionId: string, nodeDto: CreateNodeDto) {
     return await this.dataSource.transaction(async (manager) => {
-      await manager.findOneByOrFail(Document, {
-        id: documentId,
+      const documentVersion = await manager.findOneOrFail(DocumentVersion, {
+        where: { id: documentVersionId },
+        relations: ['document'],
       });
 
       if (nodeDto.type === 'subchapter') {
@@ -30,13 +32,22 @@ export class NodeService {
       const node = manager.create(Node, {
         ...nodeDto,
         parent: nodeDto.parentId ? { id: nodeDto.parentId } : undefined,
-        document: { id: documentId },
+        documentVersion: { id: documentVersionId },
+        document: documentVersion.document,
         content: manager.create(Content, {}),
       });
 
       console.log('node created', node);
       const savedNode = await manager.save(node);
       console.log('node saved', savedNode);
+
+      const documentVersionNodes = manager.create(DocumentVersionNodes, {
+        documentVersion: { id: documentVersionId },
+        node: savedNode,
+      });
+
+      await manager.save(documentVersionNodes);
+      console.log("savedNode", savedNode)
 
       return {
         id: savedNode.id,
@@ -98,45 +109,45 @@ export class NodeService {
     return node;
   }
 
-  async getDocumentTree(documentId: string) {
-    const nodes = await this.nodeRepository.find({
-      where: {
-        document: { id: documentId },
-      },
-      relations: ['parent'],
-      order: {
-        orderIndex: 'ASC',
-      },
-    });
+  // async getDocumentTree(documentId: string) {
+  //   const nodes = await this.nodeRepository.find({
+  //     where: {
+  //       // document: { id: documentId },
+  //     },
+  //     relations: ['parent'],
+  //     order: {
+  //       orderIndex: 'ASC',
+  //     },
+  //   });
 
-    return this.buildTree(nodes);
-  }
+  //   return this.buildTree(nodes);
+  // }
 
-  private buildTree(nodes: Node[]) {
-    const nodeMap = new Map<string, any>();
-    const roots: any[] = [];
+  // private buildTree(nodes: Node[]) {
+  //   const nodeMap = new Map<string, any>();
+  //   const roots: any[] = [];
 
-    for (const node of nodes) {
-      nodeMap.set(node.id, {
-        id: node.id,
-        title: node.title,
-        type: node.type,
-        orderIndex: node.orderIndex,
-        children: [],
-      });
-    }
+  //   for (const node of nodes) {
+  //     nodeMap.set(node.id, {
+  //       id: node.id,
+  //       title: node.title,
+  //       type: node.type,
+  //       orderIndex: node.orderIndex,
+  //       children: [],
+  //     });
+  //   }
 
-    for (const node of nodes) {
-      const current = nodeMap.get(node.id);
+  //   for (const node of nodes) {
+  //     const current = nodeMap.get(node.id);
 
-      if (node.parent) {
-        const parent = nodeMap.get(node.parent.id);
-        parent.children.push(current);
-      } else {
-        roots.push(current);
-      }
-    }
+  //     if (node.parent) {
+  //       const parent = nodeMap.get(node.parent.id);
+  //       parent.children.push(current);
+  //     } else {
+  //       roots.push(current);
+  //     }
+  //   }
 
-    return roots;
-  }
+  //   return roots;
+  // }
 }

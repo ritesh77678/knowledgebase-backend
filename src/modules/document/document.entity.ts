@@ -1,14 +1,7 @@
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
-import { Node } from "../node/node.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { DocumentVersion } from "../document-version/document-version.entity";
-import { Permission } from "../permission/permission.entity";
+import { Node } from "../node/node.entity";
 
-export enum DocumentStatus {
-    DRAFT = 'draft',
-    PRIVATE = 'private',
-    DELETED = 'deleted',
-    PUBLISHED = 'published'
-}
 
 @Entity()
 @Unique(["title", "communityId"])
@@ -30,25 +23,19 @@ export class Document {
     @Index()
     communityId: string
 
-    @Column({
-        type: "enum", 
-        enum: DocumentStatus, 
-        default: DocumentStatus.DRAFT
-    })
-    status: DocumentStatus
-
-    @OneToMany(() => Node, (node) => node.document)
-    nodes: Node[]
-
     @OneToMany(() => DocumentVersion, (documentVersion) => documentVersion.document)
     documentVersions: DocumentVersion[]
 
-    @OneToMany(() => Permission, (permission) => permission.document)
-    permissions: Permission[]
-
-    @OneToOne(() => DocumentVersion, {nullable: true})
+    @OneToOne(() => DocumentVersion, (documentVersion) => documentVersion.document)
     @JoinColumn({name: "publishedVersionId"})
     publishedVersion: DocumentVersion
+
+    @OneToOne(() => DocumentVersion, (documentVersion) => documentVersion.document, {nullable: true})
+    @JoinColumn({name: "draftVersionId"})
+    draftVersion: DocumentVersion
+
+    @OneToMany(() => Node, (node) => node.document)
+    nodes: Node[]
 
     @CreateDateColumn()
     createdAt: Date
@@ -56,7 +43,6 @@ export class Document {
     @UpdateDateColumn()
     updatedAt: Date
 
-    isAccessible(): boolean {
-        return this.status !== DocumentStatus.DELETED
-    }
+    @DeleteDateColumn()
+    deleteAt: Date
 }

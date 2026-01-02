@@ -27,7 +27,7 @@ export class PermissionService {
         const document = await this.documentService.getDocumentById(documentId)
         const permission = await this.permissionRepository.upsert({
             ...permissionDto,
-            document
+            // document
         }, {
             conflictPaths: ['documentId', 'userId', 'role'],
             skipUpdateIfNoValuesChanged: true

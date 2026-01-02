@@ -5,10 +5,11 @@ import {
     IsString, 
     IsUUID, 
     MaxLength, 
-    MinLength 
+    MinLength, 
+    NotEquals
 } from "class-validator";
-import { DocumentStatus } from "../document.entity";
 import { Transform } from "class-transformer";
+import { DocumentStatus } from "src/modules/document-version/document-version.entity";
 
 export class CreateDocumentDto {
     
@@ -34,6 +35,7 @@ export class CreateDocumentDto {
     communityId: string;
 
     @IsEnum(DocumentStatus, { message: 'Invalid status value' })
+    @NotEquals(DocumentStatus.PUBLISHED, { message: 'Invalid status value' })
     @IsOptional()
     status?: DocumentStatus;
 }

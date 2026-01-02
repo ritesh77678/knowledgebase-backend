@@ -11,4 +11,10 @@ export class ContentVersionDto {
     @IsString()
     @IsOptional()
     message: string
+
+    @IsUUID()
+    documentVersionId: string
+
+    @IsUUID()
+    nodeId: string
 }

@@ -38,7 +38,7 @@ export class NodeVersionService {
     async getAllNodeVersions(nodeId: string){
         const nodeVersion = await this.nodeVersionRepository.find({
             // where: {node: {id: nodeId}},
-            select: ["id", "version", "createdAt"],
+            // select: ["id", "version", "createdAt"],
         });
         if (!nodeVersion) throw new NotFoundException("Node version not found");
         return nodeVersion;

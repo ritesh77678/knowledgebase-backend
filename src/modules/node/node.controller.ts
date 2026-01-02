@@ -10,14 +10,14 @@ export class NodeController {
         private readonly nodeService: NodeService
     ) {}
 
-    @Post(":id")
+    @Post(":dvId")
     async createNode(
-        @Param("id") id: string,
+        @Param("dvId") dvId: string,
         @Body() nodeDto: CreateNodeDto
     ){
 
         console.log(nodeDto)
-        return await this.nodeService.createNode(id, nodeDto)
+        return await this.nodeService.createNode(dvId, nodeDto)
     }
 
     @Patch(":id")

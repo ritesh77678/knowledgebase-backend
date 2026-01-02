@@ -1,8 +1,7 @@
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
-import { Document } from "../document/document.entity";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Content } from "../content/content.entity";
-import { DocumentVersion } from "../document-version/document-version.entity";
-import { NodeVersion } from "../node-version/node-version.entity";
+import { DocumentVersionNodes } from "../document-version-nodes/document-version-nodes.entity";
+import { Document } from "../document/document.entity";
 
 @Entity()
 export class Node {
@@ -28,14 +27,12 @@ export class Node {
     @OneToMany(() => Node, (node) => node.parent)
     children: Node[]
 
-    // @ManyToOne(() => DocumentVersion, (documentVersion) => documentVersion.nodes)
-    // documentVersion: DocumentVersion
-
-    @OneToMany(() => NodeVersion, (nodeVersion) => nodeVersion.node)
-    nodeVersions: NodeVersion[]
-
     @OneToOne(() => Content, (content) => content.node, {cascade: true, nullable: true})
+    @JoinColumn({name: "content_id"})
     content: Content
+
+    @OneToMany(() => DocumentVersionNodes, (documentVersionNodes) => documentVersionNodes.node)
+    documentVersionNodes: DocumentVersionNodes[]
 
     @ManyToOne(() => Document, (document) => document.nodes, {onDelete: "CASCADE"})
     document: Document

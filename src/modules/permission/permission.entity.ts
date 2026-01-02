@@ -13,8 +13,8 @@ export class Permission {
     @Column()
     userId: string
 
-    @ManyToOne(() => Document, (document) => document.permissions)
-    document: Document
+    // @ManyToOne(() => Document, (document) => document.permissions)
+    // document: Document
 
     @Column({type: "enum", enum: ['read', 'write', 'admin']})
     role: 'read' | 'write' | 'admin'

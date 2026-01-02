@@ -27,11 +27,11 @@ export class NodeVersion {
     @Column({type: "jsonb"})
     content: JSON
 
-    @ManyToOne(() => Node, (node) => node.nodeVersions)
-    node: Node
+    // @ManyToOne(() => Node, (node) => node.nodeVersions)
+    // node: Node
 
-    @OneToMany(() => DocumentVersionNodes, dvn => dvn.nodeVersions)
-    documentVersionNodes: DocumentVersionNodes[]
+    // @OneToMany(() => DocumentVersionNodes, dvn => dvn.nodeVersions)
+    // documentVersionNodes: DocumentVersionNodes[]
 
     @CreateDateColumn()
     createdAt: Date

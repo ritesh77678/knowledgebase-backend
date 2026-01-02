@@ -14,7 +14,7 @@ export class DocumentVersionController {
         @Param("id") id: string,
         @Body() documentVersionDto: DocumentVersionDto
     ){
-        return await this.docummentVersionService.createDocumentVersion(id, documentVersionDto)
+        // return await this.docummentVersionService.createDocumentVersion(id, documentVersionDto)
     }
 
     @Delete(":id")
@@ -36,5 +36,12 @@ export class DocumentVersionController {
         @Param("documentId") documentId: string
     ){
         return await this.docummentVersionService.getAllDocumentVersions(documentId)
+    }
+
+    @Get("tree/:documentId")
+    async getDocumentTree(
+        @Param("documentId") documentId: string
+    ){
+        return await this.docummentVersionService.getDocumentTree(documentId)
     }
 }

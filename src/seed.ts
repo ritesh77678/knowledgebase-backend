@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Document, DocumentStatus } from './modules/document/document.entity';
+import { Document } from './modules/document/document.entity';
 import { Node } from './modules/node/node.entity';
 import { Content } from './modules/content/content.entity';
 import { ContentVersion } from './modules/content-version/content-version.entity';
@@ -9,6 +9,7 @@ import { DocumentVersion } from './modules/document-version/document-version.ent
 import { Permission } from './modules/permission/permission.entity';
 import { DataSource } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { DocumentStatus } from './modules/document-version/document-version.entity';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -89,7 +90,7 @@ async function bootstrap() {
     }
 
     // 3. Set Published Version (Latest)
-    savedContent.publishedVersion = versions[versions.length - 1];
+    // savedContent.publishedVersion = versions[versions.length - 1];
     await contentRepo.save(savedContent);
   };
 
@@ -104,30 +105,30 @@ async function bootstrap() {
     for (let i = 1; i <= 20; i++) {
       const status = statuses[(i - 1) % statuses.length];
       const doc = new Document();
-      doc.title = `${community.name} Doc ${i} - ${status.toUpperCase()} (${new Date().getTime()})`;
+      // doc.title = `${community.name} Doc ${i} - ${status.toUpperCase()} (${new Date().getTime()})`;
       doc.description = `A ${status} document for ${community.name} community.`;
       doc.authorId = randomUUID(); // Random author
       doc.communityId = community.id;
-      doc.status = status;
+      // doc.status = status;
 
       const savedDoc = await documentRepo.save(doc);
 
       // Create Permission for Author
       const permission = new Permission();
-      permission.document = savedDoc;
+      // permission.document = savedDoc;
       permission.userId = savedDoc.authorId;
       permission.spaceId = community.id;
       permission.role = 'admin';
       await permissionRepo.save(permission);
 
       // Create Document Version if PUBLISHED
-      if (status === DocumentStatus.PUBLISHED) {
+      if (status === DocumentStatus.PRIVATE) {
         const docVersion = new DocumentVersion();
         docVersion.document = savedDoc;
         docVersion.version = 'v1.0'; // Initial published version
         // docVersion.title = savedDoc.title;
         // docVersion.description = savedDoc.description;
-        docVersion.snapShot = { meta: 'Initial seed snapshot' };
+        // docVersion.snapShot = { meta: 'Initial seed snapshot' };
 
         const savedDocVersion = await documentVersionRepo.save(docVersion);
 
@@ -145,7 +146,7 @@ async function bootstrap() {
         chapter.title = `Chapter ${c}`;
         chapter.type = 'chapter';
         chapter.orderIndex = c;
-        chapter.document = savedDoc;
+        // chapter.document = savedDoc;
         chapter.authorId = savedDoc.authorId;
         const savedChapter = await nodeRepo.save(chapter);
         await createVersionedContent(
@@ -159,7 +160,7 @@ async function bootstrap() {
           sub.title = `Sub ${c}.${s}`;
           sub.type = 'subchapter';
           sub.orderIndex = s;
-          sub.document = savedDoc;
+          // sub.document = savedDoc;
           sub.parent = savedChapter;
           sub.authorId = savedDoc.authorId;
           const savedSub = await nodeRepo.save(sub);
@@ -174,7 +175,7 @@ async function bootstrap() {
             page.title = `Page ${c}.${s}.${p}`;
             page.type = 'page';
             page.orderIndex = p;
-            page.document = savedDoc;
+            // page.document = savedDoc;
             page.parent = savedSub;
             page.authorId = savedDoc.authorId;
             const savedPage = await nodeRepo.save(page);

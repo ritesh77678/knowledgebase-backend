@@ -30,7 +30,7 @@ export class Document {
     @JoinColumn({name: "publishedVersionId"})
     publishedVersion: DocumentVersion
 
-    @OneToOne(() => DocumentVersion, (documentVersion) => documentVersion.document, {nullable: true})
+    @OneToOne(() => DocumentVersion, (documentVersion) => documentVersion.document, {nullable: true, onDelete: "CASCADE"})
     @JoinColumn({name: "draftVersionId"})
     draftVersion: DocumentVersion
 

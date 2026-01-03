@@ -35,7 +35,6 @@ export class CreateDocumentDto {
     communityId: string;
 
     @IsEnum(DocumentStatus, { message: 'Invalid status value' })
-    @NotEquals(DocumentStatus.PUBLISHED, { message: 'Invalid status value' })
     @IsOptional()
     status?: DocumentStatus;
 }

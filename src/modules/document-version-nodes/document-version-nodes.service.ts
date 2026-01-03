@@ -4,11 +4,13 @@ import { DocumentVersionNodes } from './document-version-nodes.entity';
 import { In, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
 import { DocumentVersion } from '../document-version/document-version.entity';
+import { ContentVersionService } from '../content-version/content-version.service';
 
 @Injectable()
 export class DocumentVersionNodesService {
   constructor(
     @InjectRepository(DocumentVersionNodes) private readonly dvRepo: Repository<DocumentVersionNodes>,
+    private readonly contentVersionService: ContentVersionService,
     private readonly dataSource: DataSource
   ) {}
 
@@ -89,14 +91,18 @@ export class DocumentVersionNodesService {
     return node;
   }
 
-  async updateNodeContent(dvId: string, nodeId: string, content: any){
+  async updateNodeContent(dvId: string, nodeId: string, versionId: string){
     const node = await this.dvRepo.findOne({
       where: { documentVersion: { id: dvId }, node: { id: nodeId } },
     });
     if (!node) {
       throw new NotFoundException('Node not found');
     }
-    node.content = content;
+    const contentVersion = await this.contentVersionService.getContentVersionById(versionId);
+    node.content = contentVersion.snapShot;
+
     return await this.dvRepo.save(node);
   }
+
+  
 }

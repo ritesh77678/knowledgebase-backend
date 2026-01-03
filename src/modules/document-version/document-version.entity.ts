@@ -5,8 +5,8 @@ import { DocumentVersionNodes } from "../document-version-nodes/document-version
 export enum DocumentStatus {
     DRAFT = 'draft',
     PRIVATE = 'private',
-    DELETED = 'deleted',
-    PUBLISHED = 'published',
+    // DELETED = 'deleted',
+    // PUBLISHED = 'published',
 }
 
 @Entity()

@@ -25,12 +25,12 @@ export class DocumentVersionNodesController {
         return this.documentVersionNodesService.deleteNodeFromVersion(nodeId, dvId)
     }
 
-    @Patch(":dvId/:nodeId")
+    @Patch(":dvId/:nodeId/:versionId")
     async updateNodeContent(
         @Param("dvId") dvId: string,
         @Param("nodeId") nodeId: string,
-        @Body() body: UpdateContentDto
+        @Param("versionId") versionId: string
     ){
-        return this.documentVersionNodesService.updateNodeContent(dvId, nodeId, body)
+        return this.documentVersionNodesService.updateNodeContent(dvId, nodeId, versionId)
     }
 }

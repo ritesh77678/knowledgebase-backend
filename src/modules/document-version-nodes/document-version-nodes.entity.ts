@@ -9,7 +9,7 @@ export class DocumentVersionNodes {
     @PrimaryGeneratedColumn("uuid")
     id: string
 
-    @ManyToOne(() => DocumentVersion, (documentVersion) => documentVersion.documentVersionNodes)
+    @ManyToOne(() => DocumentVersion, (documentVersion) => documentVersion.documentVersionNodes, {onDelete: 'CASCADE'})
     documentVersion: DocumentVersion
 
     @ManyToOne(() => Node, (node) => node.documentVersionNodes, {onDelete: 'CASCADE'})

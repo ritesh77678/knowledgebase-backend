@@ -8,8 +8,7 @@ import { DocumentVersionNodes } from '../document-version-nodes/document-version
 @Injectable()
 export class DocumentVersionService {
   constructor(
-    @InjectRepository(DocumentVersion)
-    private documentVersionRepository: Repository<DocumentVersion>,
+    @InjectRepository(DocumentVersion) private documentVersionRepository: Repository<DocumentVersion>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -67,19 +66,6 @@ export class DocumentVersionService {
     return roots;
   }
 
-  async createNewDocumentVersionFromExisting(documentVersionId: string){
-    
-  }
-
-  async makeDocumentVersionPublished(documentVersionId: string) {
-
-    const documentVersion = await this.getDocumentVersionById(documentVersionId);
-    documentVersion.status = DocumentStatus.PUBLISHED;
-    documentVersion.document.publishedVersion = documentVersion;
-
-    return await this.documentVersionRepository.save(documentVersion);
-  }
-
   async deleteDocumentVersion(documentVersionId: string) {
     // const documentVersion = await this.getDocumentVersionById(documentVersionId);
     // return await this.documentVersionRepository.remove(documentVersion);
@@ -99,13 +85,5 @@ export class DocumentVersionService {
   }
 
   async getAllDocumentVersions(documentId: string) {
-    // const documentVersion = await this.documentVersionRepository.find({
-    //     where: {document: {id: documentId}},
-    //     select: ["id", "version", "createdAt"],
-    // });
-    // if (!documentVersion) {
-    //     throw new NotFoundException("Document version not found");
-    // }
-    // return documentVersion;
   }
 }

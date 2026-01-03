@@ -58,7 +58,7 @@ export class DocumentController {
     @Get("tree/:documentId")
     async getTree(@Param("documentId") documentId: string){
         console.log(documentId)
-        return await this.documentService.getDocumentTree(documentId)
+        // return await this.documentService.getDocumentTree(documentId)
     }
 
     @Get("status/:status")
@@ -69,5 +69,12 @@ export class DocumentController {
     @Get()
     async getAllDocuments(){
         return await this.documentService.getAllDocuments()
+    }
+
+    @Patch("publish/:documentVersionId")
+    async publishDocument(
+        @Param("documentVersionId") documentVersionId: string
+    ){
+        return await this.documentService.makeDocumentPublished(documentVersionId)
     }
 }
